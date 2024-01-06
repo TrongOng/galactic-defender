@@ -25,6 +25,7 @@ class AlienInvasion:
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+        self.spacebar_pressed = False  # Flag to check if the spacebar is pressed
 
     def run_game(self):
         '''Start the main loop for the game'''
@@ -61,7 +62,7 @@ class AlienInvasion:
             sys.exit()
         # Press Space to fire 
         elif event.key == pygame.K_SPACE:
-            self._fire_bullet()
+            self.spacebar_pressed = True  # Set the flag to true
 
     def _check_keyup_events(self, event):
         '''Respond to key releases'''
@@ -69,16 +70,21 @@ class AlienInvasion:
             self.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
-    
+        elif event.key == pygame.K_SPACE:
+            self.spacebar_pressed = False  # Set the flag to false when spacebar is released
+
     def _fire_bullet(self):
         '''Create a new bullet and add it to the bullets group'''
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
+            new_bullet.rect.midtop = self.ship.rect.midtop  # Set bullet starting position
             self.bullets.add(new_bullet)
             
     def _update_bullets(self):
         '''Update position of bullets and get rid of old bullets'''
-        # Update bullet position
+        if self.spacebar_pressed:
+            self._fire_bullet()
+
         self.bullets.update()
 
         # Get rid of bullets that have disappeared
