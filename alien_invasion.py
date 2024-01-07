@@ -1,31 +1,35 @@
 import sys
 import pygame
+import math
 
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
+from stars import Star, create_star_field
 
 class AlienInvasion:
-
     '''Overall class to manage game assets and behavior'''
+
     def __init__(self):
         pygame.init()
         self.settings = Settings()
 
         # Display Window
-
-        # 1200, 800 screen
-        #self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
-
-        # Fullscreen
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.settings.screen_width = self.screen.get_rect().width
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
 
+        # Create a group for stars using the create_star_field function
+        self.stars = create_star_field(self, 800)  # Adjust the number of stars as needed
+
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.spacebar_pressed = False  # Flag to check if the spacebar is pressed
+        self.aliens = pygame.sprite.Group()
+
+        self._create_fleet()
 
     def run_game(self):
         '''Start the main loop for the game'''
@@ -48,7 +52,7 @@ class AlienInvasion:
             # Key Released
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
-    
+
     def _check_keydown_events(self, event):
         '''Respond to keypresses'''
         # Move the ship to the right
@@ -60,7 +64,7 @@ class AlienInvasion:
         # Pressing Q to Quit
         elif event.key == pygame.K_q:
             sys.exit()
-        # Press Space to fire 
+        # Press Space to fire
         elif event.key == pygame.K_SPACE:
             self.spacebar_pressed = True  # Set the flag to true
 
@@ -79,7 +83,7 @@ class AlienInvasion:
             new_bullet = Bullet(self)
             new_bullet.rect.midtop = self.ship.rect.midtop  # Set bullet starting position
             self.bullets.add(new_bullet)
-            
+
     def _update_bullets(self):
         '''Update position of bullets and get rid of old bullets'''
         if self.spacebar_pressed:
@@ -91,7 +95,36 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
-        #print(len(self.bullets))
+        # print(len(self.bullets))
+
+    def _create_fleet(self):
+        '''Create the fleet of aliens'''
+        # Create an alien and find the number of aliens in a row
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+        available_space_x = self.settings.screen_width - 2 * alien_width
+        number_alien_x = math.ceil(available_space_x / (2 * alien_width))
+
+        # Determine the number of rows of aliens that fit on the screen
+        ship_height = self.ship.rect.height
+        available_space_y = (self.settings.screen_height - (3 * alien_height) - ship_height)
+
+        number_rows = available_space_y // (2 * alien_height)
+
+        # Create a full fleet of aliens
+        for row_number in range(number_rows):
+            for alien_number in range(number_alien_x):
+                # Create an alien and place it in the row
+                self._create_alien(alien_number, row_number)
+
+    def _create_alien(self, alien_number, row_number):
+        '''Create an alien and place it in the row'''
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+        alien.x = alien_width + 2 * alien_width * alien_number
+        alien.rect.x = alien.x
+        alien.rect.y = alien_height + 2 * alien.rect.height * row_number
+        self.aliens.add(alien)
 
     def _update_screen(self):
         '''Update images on the screen, and flip to the new screen'''
@@ -100,6 +133,11 @@ class AlienInvasion:
 
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        # Draw aliens
+        self.aliens.draw(self.screen)
+
+        # Draw stars on the screen
+        self.stars.draw(self.screen)
 
         # Make the most recently drawn screen visible
         pygame.display.flip()
