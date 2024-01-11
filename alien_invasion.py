@@ -10,6 +10,7 @@ from alien import Alien
 from stars import Star, create_star_field
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 class AlienInvasion:
     '''Overall class to manage game assets and behavior'''
@@ -26,6 +27,7 @@ class AlienInvasion:
 
         # Create an instance to store game statitics
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
 
         # Create a group for stars using the create_star_field function
         self.stars = create_star_field(self, 800)  # Adjust the number of stars as needed
@@ -242,6 +244,9 @@ class AlienInvasion:
 
         # Draw stars on the screen
         self.stars.draw(self.screen)
+
+        # Draw the score information
+        self.sb.show_score()
 
         # Draw the play button if the game is inactive
         if not self.stats.game_active:
