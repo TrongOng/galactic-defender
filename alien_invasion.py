@@ -24,6 +24,7 @@ class AlienInvasion:
         self.settings.screen_width = self.screen.get_rect().width
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
+        self.clock = pygame.time.Clock()
 
         # Create an instance to store game statitics
         self.stats = GameStats(self)
@@ -53,6 +54,7 @@ class AlienInvasion:
                 self._update_aliens()
 
             self._update_screen()
+            self.clock.tick(60) 
 
     def _check_events(self):
         '''Respond to keypresses and mouse events'''
