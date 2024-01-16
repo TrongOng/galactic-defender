@@ -11,6 +11,7 @@ from stars import Star, create_star_field
 from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
+from particle import Particle
 
 class AlienInvasion:
     '''Overall class to manage game assets and behavior'''
@@ -37,6 +38,8 @@ class AlienInvasion:
         self.bullets = pygame.sprite.Group()
         self.spacebar_pressed = False  # Flag to check if the spacebar is pressed
         self.aliens = pygame.sprite.Group()
+        self.particles = pygame.sprite.Group()
+
 
         self._create_fleet()
 
@@ -50,6 +53,7 @@ class AlienInvasion:
             
             if self.stats.game_active:
                 self.ship.update()
+                self.particles.update()
                 self._update_bullets()
                 self._update_aliens()
 
@@ -155,6 +159,11 @@ class AlienInvasion:
                 self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
             self.sb.check_high_score()
+            
+        # Call explode_particles method for each hit alien
+        for hit_aliens in collision.values():
+            for alien in hit_aliens:
+                alien.explode_particles(self.particles)
 
         # repopulating the fleet
         if not self.aliens:
@@ -268,6 +277,9 @@ class AlienInvasion:
 
         # Draw stars on the screen
         self.stars.draw(self.screen)
+
+        # Draw particle on hit 
+        self.particles.draw(self.screen)
 
         # Draw the score information
         self.sb.show_score()

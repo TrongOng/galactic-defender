@@ -1,5 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
+from particle import Particle
 
 class Alien(Sprite):
     '''A class to represent a single alien in the fleet'''
@@ -35,6 +36,12 @@ class Alien(Sprite):
         '''Move the alien to the right or left'''
         self.x += (self.settings.alien_speed * self.settings.fleet_direction)
         self.rect.x = self.x
+
+    def explode_particles(self, all_particles):
+        '''Create particles for explosion effect'''
+        for _ in range(10):  # Adjust the number of particles as needed
+            particle = Particle(self.rect.centerx, self.rect.centery)
+            all_particles.add(particle) 
 
 
 
