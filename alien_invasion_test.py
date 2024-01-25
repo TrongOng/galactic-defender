@@ -1,5 +1,6 @@
 import sys, pygame, math, random
 from time import sleep
+from enum import Enum
 
 from settings import Settings
 from ship import Ship
@@ -11,6 +12,12 @@ from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
 from particle import Particle
+
+class Keys(Enum):
+    RIGHT = pygame.K_RIGHT
+    LEFT = pygame.K_LEFT
+    QUIT = pygame.K_q
+    SPACE = pygame.K_SPACE
 
 class AlienInvasion:
     '''Overall class to manage game assets and behavior'''
@@ -67,16 +74,11 @@ class AlienInvasion:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
-
-            # Key Pressed
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
-
-            # Key Released
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
     
@@ -107,26 +109,21 @@ class AlienInvasion:
 
     def _check_keydown_events(self, event):
         '''Respond to keypresses'''
-        # Move the ship to the right
-        if event.key == pygame.K_RIGHT:
+        if event.key == Keys.RIGHT.value:
             self.ship.moving_right = True
-        # Move the ship to the left
-        elif event.key == pygame.K_LEFT:
+        elif event.key == Keys.LEFT.value:
             self.ship.moving_left = True
-        # Pressing Q to Quit
-        elif event.key == pygame.K_q:
+        elif event.key == Keys.QUIT.value:
             sys.exit()
-        # Press Space to fire
-        elif event.key == pygame.K_SPACE:
+        elif event.key == Keys.SPACE.value:
             self.spacebar_pressed = True  # Set the flag to true
-
     def _check_keyup_events(self, event):
         '''Respond to key releases'''
-        if event.key == pygame.K_RIGHT:
+        if event.key == Keys.RIGHT.value:
             self.ship.moving_right = False
-        elif event.key == pygame.K_LEFT:
+        elif event.key == Keys.LEFT.value:
             self.ship.moving_left = False
-        elif event.key == pygame.K_SPACE:
+        elif event.key == Keys.SPACE.value:
             self.spacebar_pressed = False  # Set the flag to false when spacebar is released
 
     def _fire_bullet(self):
