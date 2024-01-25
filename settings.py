@@ -22,6 +22,10 @@ class Settings:
         self.fleet_drop_speed = 10
         self.fleet_direction = 1 # Fleet_direction of 1 represents right; -1 represents left
 
+        # Alien shooting frequency
+        self.alien_shooting_frequency = 100 
+        self.alien_bullet_color = (255, 60, 60)
+
         # Game Speed Settings
         self.initialize_dynamic_settings()
 
@@ -29,6 +33,7 @@ class Settings:
         '''Initialize settings that change throughout the game'''
         self.ship_speed = 1.5 * 5
         self.bullet_speed = 3.0 * 5
+        self.alien_bullet_speed = 7.0
         self.alien_speed = 1 * 5
 
         # Scoring

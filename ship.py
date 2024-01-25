@@ -1,5 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
+from particle import Particle
 
 class Ship(Sprite):
     '''Class to manage the ship'''
@@ -59,5 +60,11 @@ class Ship(Sprite):
         '''Center the ship on the screen'''
         self.rect.midbottom = self.screen_rect.midbottom
         self.x = float(self.rect.x)
+
+    def explode_particles(self, all_particles):
+        '''Create particles for explosion effect'''
+        for _ in range(10):  # Adjust the number of particles as needed
+            particle = Particle(self.rect.centerx, self.rect.centery)
+            all_particles.add(particle) 
 
 

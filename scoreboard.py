@@ -24,6 +24,8 @@ class Scoreboard:
         self.prep_level()
         self.prep_ships()
 
+        self.update_level = True
+
     def prep_score(self):
         '''Turn the score into a rendered image'''
         rounded_score = round(self.stats.score, -1)
@@ -59,6 +61,7 @@ class Scoreboard:
             self.prep_high_score()
     
     def prep_level(self):
+        print("prep_level called")
         '''Turn the level into a rendered image'''
         level_str = str(self.stats.level)
 
@@ -84,5 +87,15 @@ class Scoreboard:
         '''Draw score to the screen'''
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.high_score_rect)
-        self.screen.blit(self.level_image, self.level_rect)
+        
+        # Check if the level needs to be updated
+        if self.update_level:
+            print("Drawing level to the screen")
+            self.prep_level()  # Call prep_level to update the level
+            self.screen.blit(self.level_image, self.level_rect)
+            self.update_level = False  # Set the flag to False after updating
+        else:
+            # If the level doesn't need to be updated, just blit the existing level image
+            self.screen.blit(self.level_image, self.level_rect)
+
         self.ships.draw(self.screen)
