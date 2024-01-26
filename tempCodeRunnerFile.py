@@ -1,1 +1,1 @@
-_game_over
+center_ship
