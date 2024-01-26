@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 from particle import Particle
+import random
 
 class Alien(Sprite):
     '''A class to represent a single alien in the fleet'''
@@ -20,7 +21,7 @@ class Alien(Sprite):
         self.rect = self.image.get_rect()
 
         # Start each new alien near the top left of the screen
-        self.rect.x = self.rect.width
+        self.rect.x = random.randint(0, self.screen.get_width() - self.rect.width)
         self.rect.y =  150 #self.rect.height
 
         # Store the alien's exact horizontal position
