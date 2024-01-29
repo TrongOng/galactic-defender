@@ -93,6 +93,7 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.sb.prep_score()
+            print("prep_level called. Current level:", self.stats.level)
             self.sb.prep_level()
             self.sb.prep_ships()
 
@@ -183,7 +184,7 @@ class AlienInvasion:
 
             # Increase level
             self.stats.level += 1
-            print("Level increased to", self.stats.level)
+            print("prep_level called. Current level:", self.stats.level)
             self.sb.prep_level()
 
 
@@ -196,13 +197,29 @@ class AlienInvasion:
             # Call explode_particles method for bullet hit ship
             self.ship.explode_particles(self.particles)
             self._ship_hit()
-    
+            
     def _create_fleet(self):
         '''Create the fleet of aliens'''
         # Make an alien
         alien = Alien(self)
-        self.aliens.add(alien)
+        alien_width = alien.rect.width
+        # Determine how many aliens fit in a row (x)
+        available_space_x = self.settings.screen_width - (2 * alien_width)
+        # Determine space bwtween aliens (one alien width)
+        number_aliens_x = available_space_x // (2 * alien_width)
 
+        # Create the first row of aliens
+        print("Before alien creation loop. Level:", self.stats.level)
+        for alien_number in range(number_aliens_x):
+            if alien_number < self.stats.level:
+                # Create an alien and place it in the row
+                alien = Alien(self)
+                alien.x = alien_width + 2 * alien_width * alien_number
+                alien.rect.x = alien.x
+                self.aliens.add(alien)
+                    
+        
+        print("After alien creation loop. Number of aliens created:", len(self.aliens))
 
     def _update_aliens(self):
         '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
