@@ -181,6 +181,7 @@ class AlienInvasion:
             # Destroy existing bullets and create a new fleet
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
             # Increase level
             self.stats.level += 1
@@ -218,7 +219,6 @@ class AlienInvasion:
                 alien.rect.x = alien.x
                 self.aliens.add(alien)
                     
-        
         print("After alien creation loop. Number of aliens created:", len(self.aliens))
 
     def _update_aliens(self):

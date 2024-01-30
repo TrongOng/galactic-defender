@@ -24,8 +24,11 @@ class Settings:
         self.fleet_direction = 1 # Fleet_direction of 1 represents right; -1 represents left
 
         # Alien shooting frequency
-        self.alien_shooting_frequency = 100 
+        self.alien_shooting_frequency = 100
         self.alien_bullet_color = (255, 60, 60)
+
+        # How quickly the game speed ups
+        self.speedup_scale = 1.1
 
         # Game Speed Settings
         self.initialize_dynamic_settings()
@@ -33,12 +36,21 @@ class Settings:
     def initialize_dynamic_settings(self):
         '''Initialize settings that change throughout the game'''
         self.ship_speed = 10.0
-        self.bullet_speed = 3.0 * 5
+        self.bullet_speed = 15.0
         self.alien_bullet_speed = 7.0
-        self.alien_speed = 1 * 5
+        self.alien_speed = 5
 
         # Scoring
         self.alien_points = 50
+
+    def increase_speed(self):
+        '''Increase speed settings'''
+        self.ship_speed *= self.speedup_scale
+        if self.ship_speed >= 20:
+            self.ship_speed = 20
+        self.bullet_speed *= self.speedup_scale
+        self.alien_bullet_speed *= self.speedup_scale
+        self.alien_speed *= self.speedup_scale
 
 
 
