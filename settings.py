@@ -23,7 +23,7 @@ class Settings:
         self.fleet_drop_speed = 10
         self.fleet_direction = 1 # Fleet_direction of 1 represents right; -1 represents left
 
-        # Alien shooting frequency
+        # Alien shooting frequency (lower the faster)
         self.alien_shooting_frequency = 100
         self.alien_bullet_color = (255, 60, 60)
 
