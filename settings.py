@@ -51,6 +51,9 @@ class Settings:
         self.bullet_speed *= self.speedup_scale
         self.alien_bullet_speed *= self.speedup_scale
         self.alien_speed *= self.speedup_scale
+        self.alien_shooting_frequency -= round(self.speedup_scale+5)
+
+
 
 
 
