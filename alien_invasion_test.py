@@ -16,6 +16,8 @@ from particle import Particle
 class Keys(Enum):
     RIGHT = pygame.K_RIGHT
     LEFT = pygame.K_LEFT
+    UP = pygame.K_UP
+    DOWN = pygame.K_DOWN
     QUIT = pygame.K_q
     SPACE = pygame.K_SPACE
 
@@ -114,6 +116,10 @@ class AlienInvasion:
             self.ship.moving_right = True
         elif event.key == Keys.LEFT.value:
             self.ship.moving_left = True
+        elif event.key == Keys.UP.value:
+            self.ship.moving_up = True
+        elif event.key == Keys.DOWN.value:
+            self.ship.moving_down = True
         elif event.key == Keys.QUIT.value:
             sys.exit()
         elif event.key == Keys.SPACE.value:
@@ -124,6 +130,10 @@ class AlienInvasion:
             self.ship.moving_right = False
         elif event.key == Keys.LEFT.value:
             self.ship.moving_left = False
+        elif event.key == Keys.UP.value:
+            self.ship.moving_up = False
+        elif event.key == Keys.DOWN.value:
+            self.ship.moving_down = False
         elif event.key == Keys.SPACE.value:
             self.spacebar_pressed = False  # Set the flag to false when spacebar is released
 
