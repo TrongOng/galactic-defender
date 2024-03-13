@@ -261,7 +261,7 @@ class AlienInvasion:
             if bullet.rect.top >= self.settings.screen_height:
                 self.alien_bullets.remove(bullet)
 
-        # ... (any additional logic you need for alien bullets)
+        # ... (additional logic for alien bullets types)
     
     '''Respond appropriately if any aliens have reached an edge'''
     def _check_fleet_edges(self):
