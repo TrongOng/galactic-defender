@@ -35,14 +35,23 @@ class Alien(Sprite):
     
     def update(self):
         '''Move the alien to the right or left'''
-        self.x += (self.settings.alien_speed * self.settings.fleet_direction)
-        self.rect.x = self.x
+        # self.x += (self.settings.alien_speed * self.settings.fleet_direction)
+        # self.rect.x = self.x
+        AlienMovement().first_level(self)
 
     def explode_particles(self, all_particles):
         '''Create particles for explosion effect'''
         for _ in range(10):  # Adjust the number of particles as needed
             particle = Particle(self.rect.centerx, self.rect.centery)
             all_particles.add(particle) 
+
+class AlienMovement:
+    '''Handles alien movement logic'''
+    @staticmethod
+    def first_level(alien):
+        '''Move the alien to the right or left'''
+        alien.x += (alien.settings.alien_speed * alien.settings.fleet_direction)
+        alien.rect.x = alien.x
 
 
 

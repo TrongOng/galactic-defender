@@ -1,5 +1,6 @@
 import pygame
 import math
+from alien import Alien
 
 # Initialize Pygame
 pygame.init()
@@ -14,7 +15,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 # Ship properties
-ship_radius = 50
+ship_radius = 25
 ship_speed = 2
 angle = 0
 
