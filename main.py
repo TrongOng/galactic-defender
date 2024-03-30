@@ -8,7 +8,7 @@ from entities.bullet import Bullet
 from entities.alien_bullet import AlienBullet
 from entities.alien import Alien
 from entities.stars import Star, create_star_field
-from game_stats import GameStats
+from settings.game_stats import GameStats
 from entities.button import Button
 from entities.scoreboard import Scoreboard
 from entities.particle import Particle
