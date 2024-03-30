@@ -1,6 +1,6 @@
 import pygame
 import math
-from alien import Alien
+from entities.alien import Alien
 
 # Initialize Pygame
 pygame.init()
