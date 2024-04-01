@@ -1,6 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
-from particle import Particle
+from entities.particle import Particle
 import random
 
 class Alien(Sprite):

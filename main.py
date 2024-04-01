@@ -2,16 +2,16 @@ import sys, pygame, math, random
 from time import sleep
 from enum import Enum
 
-from settings import Settings
-from ship import Ship
-from bullet import Bullet
-from alien_bullet import AlienBullet
-from alien import Alien
-from stars import Star, create_star_field
-from game_stats import GameStats
-from button import Button
-from scoreboard import Scoreboard
-from particle import Particle
+from settings.settings import Settings
+from entities.ship import Ship
+from entities.bullet import Bullet
+from entities.alien_bullet import AlienBullet
+from entities.alien import Alien
+from entities.stars import Star, create_star_field
+from settings.game_stats import GameStats
+from entities.button import Button
+from entities.scoreboard import Scoreboard
+from entities.particle import Particle
 
 class Keys(Enum):
     RIGHT = pygame.K_RIGHT
