@@ -231,7 +231,6 @@ class AlienInvasion:
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):
-        self._check_fleet_edges()
         self.aliens.update()
 
         # Randomly make an alien shoot a bullet
@@ -262,19 +261,6 @@ class AlienInvasion:
                 self.alien_bullets.remove(bullet)
 
         # ... (additional logic for alien bullets types)
-    
-    '''Respond appropriately if any aliens have reached an edge'''
-    def _check_fleet_edges(self):
-        for alien in self.aliens.sprites():
-            if alien.check_edges():
-                self._change_fleet_direction()
-                break
-    
-    '''Drop the entire fleet and change the fleet's direction'''
-    def _change_fleet_direction(self):
-        for alien in self.aliens.sprites():
-            alien.rect.y += self.settings.fleet_drop_speed
-        self.settings.fleet_direction *= -1
 
     '''Respond to the ship being hit by an alien'''
     def _ship_hit(self):
