@@ -47,22 +47,20 @@ class AlienMovement:
 
         # Check edges and reverse direction if alien reaches the edge
         if alien.rect.right >= alien.screen.get_width() or alien.rect.left <= 0:
-            alien.rect.y += alien.settings.fleet_drop_speed
             alien.settings.fleet_direction *= -1
 
 class AlienLevel:
-    @staticmethod
-    def first_level(alien, number_aliens_x, alien_width, stats):
+    def first_level(self, ai_game, alien_group, number_aliens_x, alien_width, stats):
         # Create the first row of aliens
         print("Before alien creation loop. Level:", stats.level)
         for alien_number in range(number_aliens_x):
             if alien_number < stats.level:
                 # Create an alien and place it in the row
-                alien = Alien()
+                alien = Alien(ai_game)
                 alien.x = alien_width + 2 * alien_width * alien_number
                 alien.rect.x = alien.x
-                alien.add(alien)           
-        print("After alien creation loop. Number of aliens created:", len(alien))
+                alien_group.add(alien)           
+        print("After alien creation loop. Number of aliens created:", len(alien_group))
 
 
 

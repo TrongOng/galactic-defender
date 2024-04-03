@@ -7,6 +7,7 @@ from entities.ship import Ship
 from entities.bullet import Bullet
 from entities.alien_bullet import AlienBullet
 from entities.alien import Alien
+from entities.alien import AlienLevel
 from entities.stars import Star, create_star_field
 from settings.game_stats import GameStats
 from entities.button import Button
@@ -218,16 +219,8 @@ class AlienInvasion:
         # Determine space bwtween aliens (one alien width)
         number_aliens_x = available_space_x // (2 * alien_width)
 
-        # Create the first row of aliens
-        print("Before alien creation loop. Level:", self.stats.level)
-        for alien_number in range(number_aliens_x):
-            if alien_number < self.stats.level:
-                # Create an alien and place it in the row
-                alien = Alien(self)
-                alien.x = alien_width + 2 * alien_width * alien_number
-                alien.rect.x = alien.x
-                self.aliens.add(alien)           
-        print("After alien creation loop. Number of aliens created:", len(self.aliens))
+        alien_level = AlienLevel()
+        alien_level.first_level(self, self.aliens, number_aliens_x, alien_width, self.stats)
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):
