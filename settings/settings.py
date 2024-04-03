@@ -47,10 +47,12 @@ class Settings:
         # self.ship_speed *= self.speedup_scale
         # if self.ship_speed >= 20:
         #     self.ship_speed = 20
-        self.bullet_speed *= self.speedup_scale
+        # self.bullet_speed *= self.speedup_scale
         self.alien_bullet_speed *= self.speedup_scale
-        self.alien_speed *= self.speedup_scale
+        # self.alien_speed *= self.speedup_scale
         self.alien_shooting_frequency -= round(self.speedup_scale+5)
+
+# 8 total aliens can be on screen currently
 
 
 

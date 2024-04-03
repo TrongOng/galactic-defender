@@ -192,7 +192,7 @@ class AlienInvasion:
             # Destroy existing bullets and create a new fleet
             self.bullets.empty()
             self._create_fleet()
-            self.settings.increase_speed()
+            #self.settings.increase_speed()
 
             # Increase level
             self.stats.level += 1
@@ -219,12 +219,12 @@ class AlienInvasion:
         # Determine space bwtween aliens (one alien width)
         number_aliens_x = available_space_x // (2 * alien_width)
 
-        alien_level = AlienLevel()
+        alien_level = AlienLevel() # Type of level
         alien_level.first_level(self, self.aliens, number_aliens_x, alien_width, self.stats)
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):
-        self.aliens.update()
+        self.aliens.update() # Alien Movement
 
         # Randomly make an alien shoot a bullet
         if random.randint(1, self.settings.alien_shooting_frequency) == 1:
@@ -233,9 +233,6 @@ class AlienInvasion:
         # Look for alien-ship collisions
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
-
-        # Look for aliens hitting the bottom of the screen
-        self._check_aliens_bottom()
     
     '''Make a random alien shoot a bullet'''
     def _alien_shoot_bullet(self):
@@ -280,15 +277,6 @@ class AlienInvasion:
             # Reset game statistics only if no ships are left
             self.stats.reset_stats()
             self.sb.prep_score()
-
-    '''Check if any aliens have reached the bottom of the screen'''
-    def _check_aliens_bottom(self):
-        screen_rect = self.screen.get_rect()
-        for alien in self.aliens.sprites():
-            if alien.rect.bottom >= screen_rect.bottom:
-                # Treat this the same as if the ship got hit
-                self._ship_hit()
-                break
 
     '''Update images on the screen, and flip to the new screen'''
     def _update_screen(self):
