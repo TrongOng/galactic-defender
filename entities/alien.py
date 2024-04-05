@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 from entities.particle import Particle
+from settings.settings import Settings
 import random
 
 class Alien(Sprite):
@@ -29,7 +30,11 @@ class Alien(Sprite):
     
     def update(self, *args, **kwargs):
         '''Move the alien to the right or left'''
-        AlienMovement().first_level(self)
+        #AlienMovement().first_level(self)
+        print("Current position:", (self.rect.x, self.rect.y))
+        AlienMovement().second_level(self)
+        print("New position:", (self.rect.x, self.rect.y))
+        
 
     def explode_particles(self, all_particles):
         '''Create particles for explosion effect'''
@@ -49,6 +54,33 @@ class AlienMovement:
         if alien.rect.right >= alien.screen.get_width() or alien.rect.left <= 0:
             alien.settings.fleet_direction *= -1
 
+    @staticmethod
+    def second_level(alien):
+        start_x = alien.rect.x
+        start_y = alien.rect.y
+        current_waypoint = 0  # Initialize with the index of the first waypoint
+        waypoints = [(start_x, start_y), (400, start_y), (400, 400), (start_x, 400), (start_x, start_y)]
+
+        # Get the current waypoint
+        target_x, target_y = waypoints[current_waypoint]
+
+        # Move towards the current waypoint
+        if alien.rect.x < target_x:
+            alien.rect.x += alien.settings.alien_speed
+        elif alien.rect.x > target_x:
+            alien.rect.x -= alien.settings.alien_speed
+
+        if alien.rect.y < target_y:
+            alien.rect.y += alien.settings.alien_speed
+        elif alien.rect.y > target_y:
+            alien.rect.y -= alien.settings.alien_speed
+
+        # Check if the alien has reached the current waypoint
+        if alien.rect.x == target_x and alien.rect.y == target_y:
+            # Move to the next waypoint
+            current_waypoint = (current_waypoint + 1) % len(waypoints)
+
+
 class AlienLevel:
     def first_level(self, ai_game, alien_group, number_aliens_x, alien_width, stats):
         # Create the first row of aliens
@@ -61,6 +93,10 @@ class AlienLevel:
                 alien.rect.x = alien.x
                 alien_group.add(alien)           
         print("After alien creation loop. Number of aliens created:", len(alien_group))
+
+    def second_level(self, ai_game, alien_group):
+        alien = Alien(ai_game)
+        alien_group.add(alien)
 
 
 

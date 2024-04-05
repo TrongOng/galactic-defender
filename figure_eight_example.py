@@ -7,36 +7,34 @@ class Sprite(pygame.sprite.Sprite):
         self.image = pygame.Surface((40, 40))
         self.image.fill((0, 255, 0))  # Green color for the sprite
         self.rect = self.image.get_rect()
-        self.rect.center = (300, 300)  # Starting position of the sprite
+        self.rect.center = (150, 150)  # Starting position of the sprite
         self.speed = 2
-        self.direction = 'right'
+        self.waypoints = [(400, 400), (400, 200), (200, 200), (200, 400)]  # Waypoints for square movement
+        self.current_waypoint = 0  # Index of the current waypoint
 
     def update(self):
-        # Move the sprite in the specified direction
-        if self.direction == 'right':
+        # Get the current waypoint
+        target_x, target_y = self.waypoints[self.current_waypoint]
+
+        # Move towards the current waypoint
+        if self.rect.x < target_x:
             self.rect.x += self.speed
-            if self.rect.right >= 400:  # If the sprite reaches half of the screen width
-                self.rect.right = 400
-                self.direction = 'down'
-        elif self.direction == 'down':
-            self.rect.y += self.speed
-            if self.rect.bottom >= 400:  # If the sprite reaches half of the screen height
-                self.rect.bottom = 400
-                self.direction = 'left'
-        elif self.direction == 'left':
+        elif self.rect.x > target_x:
             self.rect.x -= self.speed
-            if self.rect.left <= 150:  # If the sprite reaches half of the screen width
-                self.rect.left = 150
-                self.direction = 'up'
-        elif self.direction == 'up':
+
+        if self.rect.y < target_y:
+            self.rect.y += self.speed
+        elif self.rect.y > target_y:
             self.rect.y -= self.speed
-            if self.rect.top <= 150:  # If the sprite reaches half of the screen height
-                self.rect.top = 150
-                self.direction = 'right'
+
+        # Check if the sprite has reached the current waypoint
+        if self.rect.x == target_x and self.rect.y == target_y:
+            # Move to the next waypoint
+            self.current_waypoint = (self.current_waypoint + 1) % len(self.waypoints)
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((600, 600))
+    screen = pygame.display.set_mode((1200, 800))
     clock = pygame.time.Clock()
 
     sprite = Sprite()
