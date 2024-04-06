@@ -219,10 +219,10 @@ class AlienInvasion:
         # Determine space bwtween aliens (one alien width)
         number_aliens_x = available_space_x // (2 * alien_width)
 
-        # alien_level = AlienLevel() # Type of level
-        # alien_level.first_level(self, self.aliens, number_aliens_x, alien_width, self.stats)
         alien_level = AlienLevel() # Type of level
-        alien_level.second_level(self, self.aliens)
+        alien_level.first_level(self, self.aliens, number_aliens_x, alien_width, self.stats)
+        # alien_level = AlienLevel() # Type of level
+        # alien_level.second_level(self, self.aliens)
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):

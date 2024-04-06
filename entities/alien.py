@@ -30,10 +30,10 @@ class Alien(Sprite):
     
     def update(self, *args, **kwargs):
         '''Move the alien to the right or left'''
-        #AlienMovement().first_level(self)
-        print("Current position:", (self.rect.x, self.rect.y))
-        AlienMovement().second_level(self)
-        print("New position:", (self.rect.x, self.rect.y))
+        AlienMovement().first_level(self)
+        # print("Current position:", (self.rect.x, self.rect.y))
+        # AlienMovement().second_level(self)
+        # print("New position:", (self.rect.x, self.rect.y))
         
 
     def explode_particles(self, all_particles):
