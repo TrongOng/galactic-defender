@@ -30,10 +30,13 @@ class Alien(Sprite):
     
     def update(self, *args, **kwargs):
         '''Move the alien to the right or left'''
+        print("Current Position:", (self.rect.x, self.rect.y))
         AlienMovement().first_level(self)
+        print("Current Position:", (self.rect.x, self.rect.y))
         # print("Current position:", (self.rect.x, self.rect.y))
         # AlienMovement().second_level(self)
         # print("New position:", (self.rect.x, self.rect.y))
+        # (x,y) (590, 150)
         
 
     def explode_particles(self, all_particles):
@@ -58,6 +61,7 @@ class AlienMovement:
     def second_level(alien):
         start_x = alien.rect.x
         start_y = alien.rect.y
+        print("(x,y)", (start_x, start_y))
         current_waypoint = 0  # Initialize with the index of the first waypoint
         waypoints = [(start_x, start_y), (400, start_y), (400, 400), (start_x, 400), (start_x, start_y)]
 
