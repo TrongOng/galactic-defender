@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 from entities.particle import Particle
 from settings.settings import Settings
-import random
+import random, math
 
 class Alien(Sprite):
     '''A class to represent a single alien in the fleet'''
@@ -22,20 +22,26 @@ class Alien(Sprite):
         self.rect = self.image.get_rect()
 
         # Start each new alien near the top left of the screen
-        self.rect.x = random.randint(0, self.screen.get_width() - self.rect.width)
-        self.rect.y =  150 #self.rect.height
+        #self.rect.x = random.randint(0, self.screen.get_width() - self.rect.width)\
+        #self.rect.y = 150
+        self.rect.x = self.rect.width
+        self.rect.y = self.rect.height + 100 #y = 161
 
         # Store the alien's exact horizontal position
         self.x = float(self.rect.x)
+
+        self.current_waypoints = 0
+        print("Screen size:", (self.screen.get_width(), self.screen.get_height()))
+
     
     def update(self, *args, **kwargs):
         '''Move the alien to the right or left'''
-        print("Current Position:", (self.rect.x, self.rect.y))
-        AlienMovement().first_level(self)
-        print("Current Position:", (self.rect.x, self.rect.y))
-        # print("Current position:", (self.rect.x, self.rect.y))
-        # AlienMovement().second_level(self)
-        # print("New position:", (self.rect.x, self.rect.y))
+        # print("Current Position:", (self.rect.x, self.rect.y))
+        # AlienMovement().first_level(self)
+        # print("Current Position:", (self.rect.x, self.rect.y))
+        print("Current position:", (self.rect.x, self.rect.y))
+        AlienMovement().second_level(self)
+        print("New position:", (self.rect.x, self.rect.y))
         # (x,y) (590, 150)
         
 
@@ -47,6 +53,8 @@ class Alien(Sprite):
 
 class AlienMovement:
     '''Handles alien movement logic'''
+    square_waypoints = [(500, 200), (1400, 200), (1400, 600), (500, 600)] # Square Pattern
+
     @staticmethod
     def first_level(alien):
         '''Move the alien to the right or left'''
@@ -59,30 +67,34 @@ class AlienMovement:
 
     @staticmethod
     def second_level(alien):
-        start_x = alien.rect.x
-        start_y = alien.rect.y
-        print("(x,y)", (start_x, start_y))
-        current_waypoint = 0  # Initialize with the index of the first waypoint
-        waypoints = [(start_x, start_y), (400, start_y), (400, 400), (start_x, 400), (start_x, start_y)]
+        # Get the target position from the alien's current waypoints
+        target_x, target_y = AlienMovement.square_waypoints[alien.current_waypoints]
 
-        # Get the current waypoint
-        target_x, target_y = waypoints[current_waypoint]
+        # Calculate the difference between the current position and the target position
+        dx = target_x - alien.rect.x
+        dy = target_y - alien.rect.y
 
-        # Move towards the current waypoint
-        if alien.rect.x < target_x:
-            alien.rect.x += alien.settings.alien_speed
-        elif alien.rect.x > target_x:
-            alien.rect.x -= alien.settings.alien_speed
+        # Calculate the distance between the current position and the target position
+        distance = math.sqrt(dx ** 2 + dy ** 2)
 
-        if alien.rect.y < target_y:
-            alien.rect.y += alien.settings.alien_speed
-        elif alien.rect.y > target_y:
-            alien.rect.y -= alien.settings.alien_speed
+        # Define the speed of movement
+        speed = 5
+
+        # Move towards the current waypoint using linear interpolation
+        if distance > speed:
+            # Calculate the ratio of movement based on the speed and distance
+            ratio = speed / distance
+            alien.rect.x += dx * ratio
+            alien.rect.y += dy * ratio
+        else:
+            # If the distance is less than the speed, set the alien's position to the target position
+            alien.rect.x = target_x
+            alien.rect.y = target_y
 
         # Check if the alien has reached the current waypoint
         if alien.rect.x == target_x and alien.rect.y == target_y:
             # Move to the next waypoint
-            current_waypoint = (current_waypoint + 1) % len(waypoints)
+            alien.current_waypoints = (alien.current_waypoints + 1) % len(AlienMovement.square_waypoints)
 
 
 class AlienLevel:

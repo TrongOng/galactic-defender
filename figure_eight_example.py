@@ -9,7 +9,8 @@ class Sprite(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (150, 150)  # Starting position of the sprite
         self.speed = 2
-        self.waypoints = [(400, 400), (400, 200), (200, 200), (200, 400)]  # Waypoints for square movement
+        #self.waypoints = [(400, 400), (400, 200), (200, 200), (200, 400)]  # Waypoints for square movement
+        self.waypoints = [(150, 150), (400, 150), (400, 600), (150, 600)]
         self.current_waypoint = 0  # Index of the current waypoint
 
     def update(self):
