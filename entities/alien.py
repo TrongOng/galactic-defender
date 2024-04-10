@@ -21,12 +21,7 @@ class Alien(Sprite):
         self.image = pygame.transform.scale(self.original_image, initial_size)
         self.rect = self.image.get_rect()
 
-        # Start each new alien near the top left of the screen
-        #self.rect.x = random.randint(0, self.screen.get_width() - self.rect.width)\
-        #self.rect.y = 150
-        # self.rect.x = self.rect.width
-        # self.rect.y = self.rect.height + 100 #y = 161
-        # Start each new alien near the top left of the screen
+        # Alien Coordination
         if spawn_random:
             self.rect.x = random.choice([self.rect.width, self.screen.get_width() - self.rect.width])
             if self.rect.x == self.rect.width:
@@ -65,8 +60,6 @@ class Alien(Sprite):
 
 class AlienMovement:
     '''Handles alien movement logic'''
-    # square_waypoints_left = [(500, 200), (1400, 200), (1400, 600), (500, 600)]
-    # square_waypoints_right = [(1400, 200), (500, 200), (500, 600), (1400, 600)]
 
     @staticmethod
     def first_level(alien):
@@ -115,10 +108,6 @@ class AlienMovement:
             # Move to the next waypoint
             alien.current_waypoints = (alien.current_waypoints + 1) % len(waypoints)
 
-        # Debugging output
-        print("Alien Position:", (alien.rect.x, alien.rect.y))
-        print("Target Position:", (target_x, target_y))
-
 class AlienLevel:
     def first_level(self, ai_game, alien_group, number_aliens_x, alien_width, stats):
         # Create the first row of aliens
@@ -129,7 +118,6 @@ class AlienLevel:
                 alien.x = alien_width + 2 * alien_width * alien_number
                 alien.rect.x = alien.x
                 alien_group.add(alien)           
-        print("After alien creation loop. Number of aliens created:", len(alien_group))
 
     def second_level(self, ai_game, alien_group, spawn_random=True):
         alien = Alien(ai_game, spawn_random=True)

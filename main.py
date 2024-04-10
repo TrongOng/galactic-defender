@@ -95,7 +95,6 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.sb.prep_score()
-            print("prep_level called. Current level:", self.stats.level)
             self.sb.prep_level()
             self.sb.prep_ships()
 
@@ -196,7 +195,6 @@ class AlienInvasion:
 
             # Increase level
             self.stats.level += 1
-            print("prep_level called. Current level:", self.stats.level)
             self.sb.prep_level()
 
     '''Respond to alien_bullet-ship collision'''
@@ -216,6 +214,7 @@ class AlienInvasion:
         alien_width = alien.rect.width
         # Determine how many aliens fit in a row (x)
         available_space_x = self.settings.screen_width - (2 * alien_width)
+
         # Determine space bwtween aliens (one alien width)
         number_aliens_x = available_space_x // (2 * alien_width)
 
