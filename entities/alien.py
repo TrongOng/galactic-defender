@@ -29,10 +29,17 @@ class Alien(Sprite):
         # Start each new alien near the top left of the screen
         if spawn_random:
             self.rect.x = random.choice([self.rect.width, self.screen.get_width() - self.rect.width])
-            self.rect.y = self.rect.height + 100
+            if self.rect.x == self.rect.width:
+                self.rect.y = self.rect.height + 100
+                self.direction = "left"
+            else:
+                self.rect.y = self.rect.height + 100
+                self.direction = "right"
+
         else:
             self.rect.x = self.rect.width
             self.rect.y = self.rect.height + 100
+            self.direction = "left"
         
         # Store the alien's exact horizontal position
         self.x = float(self.rect.x)
@@ -58,8 +65,8 @@ class Alien(Sprite):
 
 class AlienMovement:
     '''Handles alien movement logic'''
-    square_waypoints_left = [(500, 200), (1400, 200), (1400, 600), (500, 600)]
-    square_waypoints_right = [(1400, 200), (500, 200), (500, 600), (1400, 600)]
+    # square_waypoints_left = [(500, 200), (1400, 200), (1400, 600), (500, 600)]
+    # square_waypoints_right = [(1400, 200), (500, 200), (500, 600), (1400, 600)]
 
     @staticmethod
     def first_level(alien):
@@ -74,10 +81,11 @@ class AlienMovement:
     @staticmethod
     def second_level(alien):
         # Get the target position from the alien's current waypoints
-        if alien.rect.x == alien.screen.get_width() - alien.rect.width:
-            waypoints = AlienMovement.square_waypoints_right
+        #if alien.rect.x == alien.screen.get_width() - alien.rect.width:
+        if alien.direction == "right":
+            waypoints = [(1400, 200), (500, 200), (500, 600), (1400, 600)]
         else:
-            waypoints = AlienMovement.square_waypoints_left
+            waypoints = [(500, 200), (1400, 200), (1400, 600), (500, 600)]
         
 
         # Get the target position from the alien's current waypoints
@@ -110,8 +118,6 @@ class AlienMovement:
         # Debugging output
         print("Alien Position:", (alien.rect.x, alien.rect.y))
         print("Target Position:", (target_x, target_y))
-        
-
 
 class AlienLevel:
     def first_level(self, ai_game, alien_group, number_aliens_x, alien_width, stats):
