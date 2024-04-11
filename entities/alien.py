@@ -40,7 +40,6 @@ class Alien(Sprite):
         self.x = float(self.rect.x)
 
         self.current_waypoints = 0
-
     
     def update(self, *args, **kwargs):
         '''Move the alien to the right or left'''
