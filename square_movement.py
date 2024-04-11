@@ -1,5 +1,16 @@
 import pygame
-import sys, math, random
+import sys
+import math
+import random
+
+class Settings:
+    def __init__(self):
+        '''Init the game's settings'''
+        # Screen settings
+        self.screen_width = 1200
+        self.screen_height = 800
+        self.bg_color = (0, 0, 0)
+        self.FPS = 60 
 
 class Sprite(pygame.sprite.Sprite):
     def __init__(self, screen, spawn_random=False):
@@ -28,14 +39,18 @@ class Sprite(pygame.sprite.Sprite):
         movement.second_level(self)
 
 class Movement:
-    def second_level(self, sprite):
-        #if sprite.rect.x == sprite.screen.get_width() - sprite.rect.width:
-        if sprite.direction == "right":
-            waypoints = [(1400, 200), (500, 200), (500, 600), (1400, 600)]
-        else:
-            waypoints = [(500, 200), (1400, 200), (1400, 600), (500, 600)]
+    def __init__(self, screen_width, screen_height):
+        self.screen_width = screen_width
+        self.screen_height = screen_height
 
-        target_x, target_y = waypoints[sprite.current_waypoint]
+    def second_level(self, sprite):
+        if sprite.direction == "right":
+            waypoints = [(0.7, 0.15), (0.3, 0.15), (0.3, 0.5), (0.7, 0.5)]
+        else:
+            waypoints = [(0.3, 0.15), (0.7, 0.15), (0.7, 0.5), (0.3, 0.5)]
+
+        target_x = waypoints[sprite.current_waypoint][0] * self.screen_width
+        target_y = waypoints[sprite.current_waypoint][1] * self.screen_height
 
         dx = target_x - sprite.rect.x
         dy = target_y - sprite.rect.y
@@ -55,19 +70,24 @@ class Movement:
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    settings = Settings()
+    screen = pygame.display.set_mode((settings.screen_width, settings.screen_height))
     clock = pygame.time.Clock()
 
     all_sprites = pygame.sprite.Group()  # Create a group to hold all sprites
 
     # Create multiple instances of Sprite and add them to the group
     spawn_interval = 50  # Adjust this value to set the distance between each spawned sprite
-    for i in range(5):  # Spawn five sprites
+    sprite = Sprite(screen)
+    sprite_width = sprite.rect.width
+    max_sprites_horizontal = (settings.screen_width - spawn_interval) // (sprite_width + spawn_interval)
+    for i in range(max_sprites_horizontal):
         sprite = Sprite(screen)
-        sprite.rect.x = (i + 1) * (sprite.rect.width + spawn_interval)
+        sprite.rect.x = (i + 1) * (sprite_width + spawn_interval)
         all_sprites.add(sprite)
 
-    movement = Movement()
+
+    movement = Movement(settings.screen_width, settings.screen_height)
 
     while True:
         for event in pygame.event.get():
@@ -80,10 +100,7 @@ def main():
         screen.fill((0, 0, 0))  # Fill the screen with black color
         all_sprites.draw(screen)
         pygame.display.flip()
-        clock.tick(60)  # Cap the frame rate at 60 FPS
-
-
-
+        clock.tick(settings.FPS)  # Cap the frame rate at 60 FPS
 
 if __name__ == "__main__":
     main()

@@ -46,7 +46,7 @@ class Alien(Sprite):
         # print("Current Position:", (self.rect.x, self.rect.y))
         # AlienMovement().first_level(self)
         # print("Current Position:", (self.rect.x, self.rect.y))
-        AlienMovement().second_level(self)
+        AlienMovement(self.screen.get_width(), self.screen.get_height()).second_level(self)
         # (x,y) (590, 150)
         
 
@@ -58,8 +58,10 @@ class Alien(Sprite):
 
 class AlienMovement:
     '''Handles alien movement logic'''
+    def __init__(self, screen_width, screen_height):
+        self.screen_width = screen_width
+        self.screen_height = screen_height
 
-    @staticmethod
     def first_level(alien):
         '''Move the alien to the right or left'''
         alien.x += (alien.settings.alien_speed * alien.settings.fleet_direction)
@@ -69,18 +71,18 @@ class AlienMovement:
         if alien.rect.right >= alien.screen.get_width() or alien.rect.left <= 0:
             alien.settings.fleet_direction *= -1
 
-    @staticmethod
-    def second_level(alien):
+    def second_level(self, alien):
         # Get the target position from the alien's current waypoints
         #if alien.rect.x == alien.screen.get_width() - alien.rect.width:
         if alien.direction == "right":
-            waypoints = [(1400, 200), (500, 200), (500, 600), (1400, 600)]
+            waypoints = [(0.7, 0.15), (0.3, 0.15), (0.3, 0.5), (0.7, 0.5)]
         else:
-            waypoints = [(500, 200), (1400, 200), (1400, 600), (500, 600)]
+            waypoints = [(0.3, 0.15), (0.7, 0.15), (0.7, 0.5), (0.3, 0.5)]
         
 
         # Get the target position from the alien's current waypoints
-        target_x, target_y = waypoints[alien.current_waypoints]
+        target_x = waypoints[alien.current_waypoints][0] * self.screen_width
+        target_y = waypoints[alien.current_waypoints][1] * self.screen_height
 
         # Calculate the difference between the current position and the target position
         dx = target_x - alien.rect.x
