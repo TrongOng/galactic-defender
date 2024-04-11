@@ -58,8 +58,15 @@ def main():
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     clock = pygame.time.Clock()
 
-    sprite = Sprite(screen, spawn_random=True)
-    all_sprites = pygame.sprite.Group(sprite)
+    all_sprites = pygame.sprite.Group()  # Create a group to hold all sprites
+
+    # Create multiple instances of Sprite and add them to the group
+    spawn_interval = 50  # Adjust this value to set the distance between each spawned sprite
+    for i in range(5):  # Spawn five sprites
+        sprite = Sprite(screen)
+        sprite.rect.x = (i + 1) * (sprite.rect.width + spawn_interval)
+        all_sprites.add(sprite)
+
     movement = Movement()
 
     while True:
@@ -74,6 +81,9 @@ def main():
         all_sprites.draw(screen)
         pygame.display.flip()
         clock.tick(60)  # Cap the frame rate at 60 FPS
+
+
+
 
 if __name__ == "__main__":
     main()

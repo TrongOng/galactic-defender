@@ -40,7 +40,6 @@ class Alien(Sprite):
         self.x = float(self.rect.x)
 
         self.current_waypoints = 0
-        print("Screen size:", (self.screen.get_width(), self.screen.get_height()))
 
     
     def update(self, *args, **kwargs):
