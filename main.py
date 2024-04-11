@@ -69,6 +69,7 @@ class AlienInvasion:
                 self._update_alien_bullets()
 
             self._update_screen()
+            print("Updating Screen")
             self.clock.tick(60) 
 
     '''Respond to keypresses and mouse events'''
@@ -108,6 +109,7 @@ class AlienInvasion:
 
             # Hide the mouse cursor
             pygame.mouse.set_visible(False)
+        
 
     '''Respond to keypresses'''
     def _check_keydown_events(self, event):
@@ -206,22 +208,33 @@ class AlienInvasion:
             # Call explode_particles method for bullet hit ship
             self.ship.explode_particles(self.particles)
             self._ship_hit()
-    
+            print("Ship hit by alien bullet")  # Add a debug print statement
+
+    '''Check for ship-alien collisions'''
+    def _check_ship_alien_collision(self):
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self.ship.explode_particles(self.particles)
+            self._ship_hit()
+
     '''Create the fleet of aliens'''
     def _create_fleet(self):
         # Make an alien
         alien = Alien(self)
         alien_width = alien.rect.width
+        spawn_interval = 50
         # Determine how many aliens fit in a row (x)
         available_space_x = self.settings.screen_width - (2 * alien_width)
 
-        # Determine space bwtween aliens (one alien width)
+        # Determine space bwtween aliens (one alien width) first level
         number_aliens_x = available_space_x // (2 * alien_width)
+
+        # Determin max alien horizontal second level
+        max_aliens_second_level = (self.settings.screen_width - spawn_interval) // (alien_width + spawn_interval)
 
         # alien_level = AlienLevel() # Type of level
         # alien_level.first_level(self, self.aliens, number_aliens_x, alien_width, self.stats)
         alien_level = AlienLevel() # Type of level
-        alien_level.second_level(self, self.aliens)
+        alien_level.second_level(self, self.aliens, alien_width, max_aliens_second_level, spawn_interval)
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):
@@ -231,9 +244,8 @@ class AlienInvasion:
         if random.randint(1, self.settings.alien_shooting_frequency) == 1:
             self._alien_shoot_bullet()
 
-        # Look for alien-ship collisions
-        if pygame.sprite.spritecollideany(self.ship, self.aliens):
-            self._ship_hit()
+        # Check for ship-alien collisions
+        self._check_ship_alien_collision()
     
     '''Make a random alien shoot a bullet'''
     def _alien_shoot_bullet(self):
@@ -251,8 +263,6 @@ class AlienInvasion:
             if bullet.rect.top >= self.settings.screen_height:
                 self.alien_bullets.remove(bullet)
 
-        # ... (additional logic for alien bullets types)
-
     '''Respond to the ship being hit by an alien'''
     def _ship_hit(self):
         if self.stats.ships_left > 0:
@@ -260,17 +270,20 @@ class AlienInvasion:
             self.stats.ships_left -= 1
             self.sb.prep_ships()
 
+            # Reset ship's position to the center
+            print("Resetting ship's position")
+            self.ship.center_ship()
+
             # Get rid of any remaining aliens and bullets
             self.aliens.empty()
             self.bullets.empty()
             self.alien_bullets.empty()
 
-            # Create a new fleet and center the ship
+            # Create a new fleet
             self._create_fleet()
-            self.ship.center_ship()
 
             # Pause
-            sleep(0.2)
+            sleep(0.5)
         else:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)

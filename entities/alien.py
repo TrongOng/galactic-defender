@@ -119,9 +119,20 @@ class AlienLevel:
                 alien.rect.x = alien.x
                 alien_group.add(alien)           
 
-    def second_level(self, ai_game, alien_group, spawn_random=True):
-        alien = Alien(ai_game, spawn_random=True)
-        alien_group.add(alien)
+    def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level, spawn_interval):
+        for i in range(max_aliens_second_level):
+            if i % 2 == 0:  # Alternate between left and right spawns
+                alien = Alien(ai_game, spawn_random=True)
+            else:
+                alien = Alien(ai_game, spawn_random=True)  # Pass False to spawn at the other side
+            alien.rect.x = (i + 1) * (alien_width + spawn_interval) + i * alien_width
+            alien_group.add(alien)
+
+
+
+
+
+
 
 
 

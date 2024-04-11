@@ -22,8 +22,9 @@ class Ship(Sprite):
         self.rect = self.image.get_rect()
 
         # Start each new ship at the bottom center of the screen
-        self.rect.midbottom = self.screen_rect.midbottom
-        self.rect.y -= 20  # Move the ship 10 pixels up
+        # self.rect.midbottom = self.screen_rect.midbottom
+        # self.rect.y -= 20  # Move the ship 10 pixels up
+        self.rect.bottom = self.screen_rect.bottom
 
         # Store a decimal value for the ship's horizontal position
         self.x = float(self.rect.x)
@@ -69,8 +70,9 @@ class Ship(Sprite):
 
     def center_ship(self):
         '''Center the ship on the screen'''
-        self.rect.midbottom = self.screen_rect.midbottom
-        self.rect.y -= 20  # Move the ship 10 pixels up
+        # self.rect.midbottom = self.screen_rect.midbottom
+        # self.rect.y -= 20  # Move the ship 10 pixels up
+        self.rect.bottom = self.screen_rect.bottom
         self.x = float(self.rect.x)
 
     def explode_particles(self, all_particles):

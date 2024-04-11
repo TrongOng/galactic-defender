@@ -9,7 +9,7 @@ class Settings:
         self.FPS = 60 
 
         # Ship settings
-        self.ship_limit = 3
+        self.ship_limit = 3 # User Health
 
         # Bullet settings
         self.bullet_width = 3
