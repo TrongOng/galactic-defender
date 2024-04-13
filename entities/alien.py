@@ -6,13 +6,13 @@ import random, math
 
 class Alien(Sprite):
     '''A class to represent a single alien in the fleet'''
-    def __init__(self, ai_game, alien_speed=5, fleet_direction=1, spawn_random=False):
+    def __init__(self, ai_game, spawn_random=False):
         '''Initialize the alien and sets it starting position'''
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
-        self.alien_speed = alien_speed
-        self.fleet_direction = fleet_direction
+        self.alien_speed = 5
+        self.fleet_direction = 1
 
         # Load the alien image and get its rect
         self.image = pygame.image.load('images/alien.bmp')
@@ -111,7 +111,7 @@ class AlienLevel:
                 alien.y = alien.rect.height + 100
                 alien_group.add(alien)
 
-    def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level):
+    def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level, spawn_random=True):
         # Determine whether to spawn aliens on the left or right side based on the level number
         spawn_on_left = ai_game.stats.level % 2 == 0  # Spawn on left for even levels, right for odd levels
 
