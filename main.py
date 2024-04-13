@@ -69,7 +69,6 @@ class AlienInvasion:
                 self._update_alien_bullets()
 
             self._update_screen()
-            print("Updating Screen")
             self.clock.tick(60) 
 
     '''Respond to keypresses and mouse events'''
@@ -284,6 +283,7 @@ class AlienInvasion:
 
             # Pause
             sleep(0.5)
+
         else:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)

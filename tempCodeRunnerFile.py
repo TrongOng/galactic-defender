@@ -1,1 +1,1 @@
-_update_screen
+_ship_hit

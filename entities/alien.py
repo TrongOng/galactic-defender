@@ -38,6 +38,7 @@ class Alien(Sprite):
         
         # Store the alien's exact horizontal position
         self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
 
         self.current_waypoints = 0
     
@@ -47,7 +48,10 @@ class Alien(Sprite):
         # AlienMovement().first_level(self)
         # print("Current Position:", (self.rect.x, self.rect.y))
         AlienMovement(self.screen.get_width(), self.screen.get_height()).second_level(self)
-        # (x,y) (590, 150)
+
+        # Update the rect based on the new positions
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
         
 
     def explode_particles(self, all_particles):
@@ -62,61 +66,37 @@ class AlienMovement:
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-    def first_level(alien):
-        '''Move the alien to the right or left'''
-        alien.x += (alien.settings.alien_speed * alien.settings.fleet_direction)
-        alien.rect.x = alien.x
-
-        # Check edges and reverse direction if alien reaches the edge
-        if alien.rect.right >= alien.screen.get_width() or alien.rect.left <= 0:
-            alien.settings.fleet_direction *= -1
-
     def second_level(self, alien):
-        # Get the target position from the alien's current waypoints
-        #if alien.rect.x == alien.screen.get_width() - alien.rect.width:
         if alien.direction == "right":
             waypoints = [(0.7, 0.15), (0.3, 0.15), (0.3, 0.5), (0.7, 0.5)]
         else:
             waypoints = [(0.3, 0.15), (0.7, 0.15), (0.7, 0.5), (0.3, 0.5)]
-        
 
-        # Get the target position from the alien's current waypoints
         target_x = waypoints[alien.current_waypoints][0] * self.screen_width
         target_y = waypoints[alien.current_waypoints][1] * self.screen_height
 
-        # Calculate the difference between the current position and the target position
-        dx = target_x - alien.rect.x
-        dy = target_y - alien.rect.y
+        dx = target_x - alien.x
+        dy = target_y - alien.y
 
-        # Calculate the distance between the current position and the target position
         distance = math.sqrt(dx ** 2 + dy ** 2)
-
-        # Define the speed of movement
         speed = 5
 
-        # Move towards the current waypoint using linear interpolation
         if distance > speed:
-            # Calculate the ratio of movement based on the speed and distance
             ratio = speed / distance
-            alien.rect.x += dx * ratio
-            alien.rect.y += dy * ratio
+            alien.x += dx * ratio
+            alien.y += dy * ratio
         else:
-            # If the distance is less than the speed, set the alien's position to the target position
-            alien.rect.x = target_x
-            alien.rect.y = target_y
-
-            # Move to the next waypoint
+            alien.x = target_x
+            alien.y = target_y
             alien.current_waypoints = (alien.current_waypoints + 1) % len(waypoints)
 
 class AlienLevel:
     def first_level(self, ai_game, alien_group, number_aliens_x, alien_width, stats):
-        # Create the first row of aliens
         for alien_number in range(number_aliens_x):
             if alien_number < stats.level:
-                # Create an alien and place it in the row
                 alien = Alien(ai_game)
                 alien.x = alien_width + 2 * alien_width * alien_number
-                alien.rect.x = alien.x
+                alien.y = alien.rect.height + 100
                 alien_group.add(alien)           
 
     def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level, spawn_interval):
@@ -124,9 +104,11 @@ class AlienLevel:
             if i % 2 == 0:  # Alternate between left and right spawns
                 alien = Alien(ai_game, spawn_random=True)
             else:
-                alien = Alien(ai_game, spawn_random=True)  # Pass False to spawn at the other side
-            alien.rect.x = (i + 1) * (alien_width + spawn_interval) + i * alien_width
+                alien = Alien(ai_game, spawn_random=True)
+            alien.x = (i + 1) * (alien_width + spawn_interval) + i * alien_width
+            alien.y = alien.rect.height + 100
             alien_group.add(alien)
+
 
 
 
