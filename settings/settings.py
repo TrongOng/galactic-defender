@@ -18,8 +18,8 @@ class Settings:
         self.bullets_allowed = 1.0
 
         # Alien Settings
-        self.alien_speed = 0.5
-        self.fleet_direction = 1 # Fleet_direction of 1 represents right; -1 represents left
+        #self.alien_speed = 0.5
+        #self.fleet_direction = 1 # Fleet_direction of 1 represents right; -1 represents left
 
         # Alien shooting frequency (lower the faster)
         self.alien_shooting_frequency = 100
@@ -36,7 +36,7 @@ class Settings:
         self.ship_speed = 13.0
         self.bullet_speed = 15.0
         self.alien_bullet_speed = 7.0
-        self.alien_speed = 5
+        #self.alien_speed = 5
 
         # Scoring
         self.alien_points = 50

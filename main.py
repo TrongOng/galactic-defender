@@ -216,24 +216,47 @@ class AlienInvasion:
             self._ship_hit()
 
     '''Create the fleet of aliens'''
+    # def _create_fleet(self):
+    #     # Make an alien
+    #     alien = Alien(self)
+    #     alien_width = alien.rect.width
+    #     spawn_interval = 50
+        
+    #     # Determine how many aliens fit in a row (x) for the first level
+    #     available_space_x_first_level = self.settings.screen_width - (2 * alien_width)
+    #     number_aliens_x_first_level = available_space_x_first_level // (2 * alien_width)
+
+    #     # Determine max aliens horizontal for the second level
+    #     available_space_x_second_level = self.settings.screen_width - spawn_interval
+    #     max_aliens_second_level = available_space_x_second_level // (alien_width + spawn_interval)
+
+    #     # Create the first level fleet
+    #     alien_level = AlienLevel()
+    #     #alien_level.first_level(self, self.aliens, number_aliens_x_first_level, alien_width, self.stats)
+
+    #     # Create the second level fleet
+    #     alien_level.second_level(self, self.aliens, alien_width, max_aliens_second_level, spawn_interval)
     def _create_fleet(self):
         # Make an alien
         alien = Alien(self)
         alien_width = alien.rect.width
         spawn_interval = 50
-        # Determine how many aliens fit in a row (x)
-        available_space_x = self.settings.screen_width - (2 * alien_width)
 
-        # Determine space bwtween aliens (one alien width) first level
-        number_aliens_x = available_space_x // (2 * alien_width)
+        available_space_x_first_level = self.settings.screen_width - (2 * alien_width)
+        number_aliens_x_first_level = available_space_x_first_level // (2 * alien_width)
+        
+        # Create the first level fleet
+        alien_level = AlienLevel()
+        alien_level.first_level(self, self.aliens, number_aliens_x_first_level, alien_width, self.stats)
 
-        # Determin max alien horizontal second level
-        max_aliens_second_level = (self.settings.screen_width - spawn_interval) // (alien_width + spawn_interval)
+        # Calculate max aliens horizontal for the second level
+        available_space_x_second_level = self.settings.screen_width - spawn_interval
+        max_aliens_second_level = available_space_x_second_level // (alien_width + spawn_interval)
+        
+        # Create the second level fleet
+        #alien_level.second_level(self, self.aliens, alien_width, max_aliens_second_level)
 
-        # alien_level = AlienLevel() # Type of level
-        # alien_level.first_level(self, self.aliens, number_aliens_x, alien_width, self.stats)
-        alien_level = AlienLevel() # Type of level
-        alien_level.second_level(self, self.aliens, alien_width, max_aliens_second_level, spawn_interval)
+
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):

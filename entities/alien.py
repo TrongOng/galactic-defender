@@ -6,11 +6,13 @@ import random, math
 
 class Alien(Sprite):
     '''A class to represent a single alien in the fleet'''
-    def __init__(self, ai_game, spawn_random=False):
+    def __init__(self, ai_game, alien_speed=5, fleet_direction=1, spawn_random=False):
         '''Initialize the alien and sets it starting position'''
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
+        self.alien_speed = alien_speed
+        self.fleet_direction = fleet_direction
 
         # Load the alien image and get its rect
         self.image = pygame.image.load('images/alien.bmp')
@@ -44,10 +46,8 @@ class Alien(Sprite):
     
     def update(self, *args, **kwargs):
         '''Move the alien to the right or left'''
-        # print("Current Position:", (self.rect.x, self.rect.y))
-        # AlienMovement().first_level(self)
-        # print("Current Position:", (self.rect.x, self.rect.y))
-        AlienMovement(self.screen.get_width(), self.screen.get_height()).second_level(self)
+        #AlienMovement(self.screen.get_width(), self.screen.get_height()).second_level(self)
+        AlienMovement(self.screen.get_width(), self.screen.get_height()).first_level(self)
 
         # Update the rect based on the new positions
         self.rect.x = int(self.x)
@@ -66,7 +66,19 @@ class AlienMovement:
         self.screen_width = screen_width
         self.screen_height = screen_height
 
+    def first_level(self, alien):
+        alien.x += (alien.alien_speed * alien.fleet_direction)
+        alien.rect.x = alien.x
+
+        # Check edges and reverse direction if alien reaches the edge
+        if alien.rect.right >= alien.screen.get_width() or alien.rect.left <= 0:
+            alien.fleet_direction *= -1
+
+
     def second_level(self, alien):
+        def lerp(start, end, t):
+            return start + (end - start) * t
+        
         if alien.direction == "right":
             waypoints = [(0.7, 0.15), (0.3, 0.15), (0.3, 0.5), (0.7, 0.5)]
         else:
@@ -81,13 +93,13 @@ class AlienMovement:
         distance = math.sqrt(dx ** 2 + dy ** 2)
         speed = 5
 
-        if distance > speed:
-            ratio = speed / distance
-            alien.x += dx * ratio
-            alien.y += dy * ratio
-        else:
-            alien.x = target_x
-            alien.y = target_y
+        if distance > 0:
+            # Calculate a consistent interpolation factor for both dx and dy
+            t = min(speed / distance, 1)  # Ensure t doesn't exceed 1
+            alien.x = lerp(alien.x, target_x, t)
+            alien.y = lerp(alien.y, target_y, t)
+
+        if distance < 1:  # If close to target, move to the next waypoint
             alien.current_waypoints = (alien.current_waypoints + 1) % len(waypoints)
 
 class AlienLevel:
@@ -97,15 +109,28 @@ class AlienLevel:
                 alien = Alien(ai_game)
                 alien.x = alien_width + 2 * alien_width * alien_number
                 alien.y = alien.rect.height + 100
-                alien_group.add(alien)           
+                alien_group.add(alien)
 
-    def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level, spawn_interval):
+    def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level):
+        # Determine whether to spawn aliens on the left or right side based on the level number
+        spawn_on_left = ai_game.stats.level % 2 == 0  # Spawn on left for even levels, right for odd levels
+
+        # Calculate the available space for aliens
+        available_space_x = ai_game.settings.screen_width - 2 * alien_width
+
+        # Calculate the gap between each alien's spawn position
+        gap = available_space_x / (max_aliens_second_level + 1)
+
+        # Calculate the starting x position based on the chosen side and gap
+        if spawn_on_left:
+            start_x = gap
+        else:
+            start_x = ai_game.settings.screen_width - gap - alien_width
+
+        # Spawn all aliens on the chosen side
         for i in range(max_aliens_second_level):
-            if i % 2 == 0:  # Alternate between left and right spawns
-                alien = Alien(ai_game, spawn_random=True)
-            else:
-                alien = Alien(ai_game, spawn_random=True)
-            alien.x = (i + 1) * (alien_width + spawn_interval) + i * alien_width
+            alien = Alien(ai_game, spawn_random=False)  # Spawn aliens in a fixed position
+            alien.x = start_x + (i + 1) * gap  # Adding 1 to i to start from the first gap
             alien.y = alien.rect.height + 100
             alien_group.add(alien)
 
