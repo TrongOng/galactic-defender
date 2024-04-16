@@ -103,14 +103,39 @@ class AlienMovement:
             alien.current_waypoints = (alien.current_waypoints + 1) % len(waypoints)
 
 class AlienLevel:
-    def first_level(self, ai_game, alien_group, number_aliens_x, alien_width, stats):
-        for alien_number in range(number_aliens_x):
-            if alien_number < stats.level:
+    def __init__(self) -> None:
+        pass
+    def first_level(self, ai_game, alien_group, ship_height, stats):
+        # Create a single alien object to get its dimensions
+        alien = Alien(ai_game)
+        alien_width, alien_height = alien.rect.size
+
+        # Calculate max aliens horizontal for the first level
+        available_space_x_first_level = ai_game.settings.screen_width - (2 * alien_width)
+        number_aliens_x_first_level = available_space_x_first_level // (2 * alien_width)
+
+        # Determine the number of rows of aliens that fit on the screen
+        available_space_y_first_level = ai_game.settings.screen_height - (3 * alien_height) - ship_height
+        number_rows = min(2, available_space_y_first_level // (2 * alien_height))
+
+        if stats.level == 1:
+            for alien_number in range(number_aliens_x_first_level):
+                # Create a new alien object in each iteration
                 alien = Alien(ai_game)
                 alien.x = alien_width + 2 * alien_width * alien_number
                 alien.y = alien.rect.height + 100
                 alien_group.add(alien)
+        else:
+            for row_number in range(number_rows):
+                for alien_number in range(number_aliens_x_first_level):
+                    # Create a new alien object in each iteration
+                    alien = Alien(ai_game)
+                    alien.x = alien_width + 2 * alien_width * alien_number
+                    alien.y = alien.rect.height + 2 * alien.rect.height * row_number
+                    alien_group.add(alien)
 
+
+        
     def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level, spawn_random=True):
         # Determine whether to spawn aliens on the left or right side based on the level number
         spawn_on_left = ai_game.stats.level % 2 == 0  # Spawn on left for even levels, right for odd levels
