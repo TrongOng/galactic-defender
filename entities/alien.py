@@ -30,8 +30,8 @@ class Alien(Sprite):
 
     def update(self, *args, **kwargs):
         '''Move the alien to the right or left'''
-        #AlienMovement(self.screen.get_width(), self.screen.get_height()).sqaure_pattern(self)
-        AlienMovement(self.screen.get_width(), self.screen.get_height()).linear_pattern(self)
+        AlienMovement(self.screen.get_width(), self.screen.get_height()).sqaure_pattern(self)
+        #AlienMovement(self.screen.get_width(), self.screen.get_height()).linear_pattern(self)
 
         # Update the rect based on the new positions
         self.rect.x = int(self.x)
@@ -149,13 +149,21 @@ class AlienLevel:
                 alien.y = (alien.rect.height + 2 * alien.rect.height * row_number) + 100
                 alien_group.add(alien)
 
-    def third_level(self, ai_game, alien_group, alien_width, max_aliens_second_level):
+    def third_level(self, ai_game, alien_group):
         # Create a single instance of Alien to determine the side of spawning
         first_alien = self.spawn_alien(ai_game, spawn_random=True)
         first_alien_direction = first_alien.direction # Store the direction of the first alien
 
+        # Initiate Variables
+        spawn_interval = 100
+        alien_width, alien_height = first_alien.rect.size
+
         # Calculate the available space for aliens
         available_space_x = ai_game.settings.screen_width - 2 * alien_width
+
+        # Calculate max aliens horizontal for the second level
+        available_space_x_second_level = ai_game.settings.screen_width - spawn_interval
+        max_aliens_second_level = available_space_x_second_level // (alien_width + spawn_interval)
 
         # Calculate the gap between each alien's spawn position
         gap = available_space_x / (max_aliens_second_level + 1)
@@ -175,6 +183,7 @@ class AlienLevel:
             alien.x = start_x + (i * gap) if first_alien.direction == "right" else start_x - (i * gap)
             alien.y = alien.rect.height + 100
             alien_group.add(alien)
+
 
 
 

@@ -218,22 +218,17 @@ class AlienInvasion:
     def _create_fleet(self):
         # Make an alien
         alien = Alien(self)
-        alien_width = alien.rect.width
-        spawn_interval = 50
         alien_level = AlienLevel()
-
         ship_height = self.ship.rect.height
         
         # Create the first level fleet
         #alien_level.first_level(self, self.aliens)
-        alien_level.second_level(self, self.aliens, ship_height)
 
-        # Calculate max aliens horizontal for the second level
-        available_space_x_second_level = self.settings.screen_width - spawn_interval
-        max_aliens_second_level = available_space_x_second_level // (alien_width + spawn_interval)
-        
         # Create the second level fleet
-        #alien_level.third_level(self, self.aliens, alien_width, max_aliens_second_level)
+        #alien_level.second_level(self, self.aliens, ship_height)
+        
+        # Create the third level fleet
+        alien_level.third_level(self, self.aliens)
 
 
 
