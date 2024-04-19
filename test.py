@@ -6,7 +6,7 @@ import random, math
 
 class Alien(Sprite):
     '''A class to represent a single alien in the fleet'''
-    def __init__(self, ai_game):
+    def __init__(self, ai_game, spawn_random=False):
         '''Initialize the alien and sets it starting position'''
         super().__init__()
         self.screen = ai_game.screen
@@ -14,7 +14,6 @@ class Alien(Sprite):
         self.alien_speed = 5
         self.fleet_direction = 1
         self.current_waypoints = 0
-        self.direction = ""
 
         # Load the alien image and get its rect
         self.image = pygame.image.load('images/alien.bmp')
@@ -25,6 +24,22 @@ class Alien(Sprite):
         self.image = pygame.transform.scale(self.original_image, initial_size)
         self.rect = self.image.get_rect()
 
+        # # Alien Coordination
+        if spawn_random:
+            '''Spawn the alien randomly on the screen'''
+            self.rect.x = random.choice([self.rect.width, self.screen.get_width() - self.rect.width])
+            if self.rect.x == self.rect.width:
+                self.rect.y = self.rect.height + 100
+                self.direction = "left"
+            else:
+                self.rect.y = self.rect.height + 100
+                self.direction = "right"
+        else:
+            self.rect.x = self.rect.width
+            self.rect.y = self.rect.height + 100
+            self.direction = "left"
+
+        # Store the alien's exact horizontal position
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
@@ -89,33 +104,9 @@ class AlienMovement:
 class AlienLevel:
     def __init__(self) -> None:
         pass
-    
-    def spawn_alien(self, ai_game, spawn_random=False):
-        '''Spawn a new alien'''
-        alien = Alien(ai_game)
-        if spawn_random:
-            '''Spawn the alien randomly on the screen'''
-            alien.rect.x = random.choice([alien.rect.width, ai_game.settings.screen_width - alien.rect.width])
-            print("Alien rect.x:", alien.rect.x)
-            if alien.rect.x == alien.rect.width:
-                alien.rect.y = alien.rect.height + 100
-                alien.direction = "left"
-            else:
-                alien.rect.y = alien.rect.height + 100
-                alien.direction = "right"   
-        else:
-            alien.rect.x = alien.rect.width
-            alien.rect.y = alien.rect.height + 100
-            alien.direction = "left"
-
-        alien.x = float(alien.rect.x)
-        alien.y = float(alien.rect.y)
-
-        return alien
-
     def first_level(self, ai_game, alien_group, ship_height, stats):
         # Create a single alien object to get its dimensions
-        alien = self.spawn_alien(ai_game)
+        alien = Alien(ai_game)
         alien_width, alien_height = alien.rect.size
 
         # Calculate max aliens horizontal for the first level
@@ -129,7 +120,7 @@ class AlienLevel:
         if stats.level == 1:
             for alien_number in range(number_aliens_x_first_level):
                 # Create a new alien object in each iteration
-                alien = self.spawn_alien(ai_game)
+                alien = Alien(ai_game)
                 alien.x = alien_width + 2 * alien_width * alien_number
                 alien.y = alien.rect.height + 100
                 alien_group.add(alien)
@@ -137,49 +128,54 @@ class AlienLevel:
             for row_number in range(number_rows):
                 for alien_number in range(number_aliens_x_first_level):
                     # Create a new alien object in each iteration
-                    alien = self.spawn_alien(ai_game)
+                    alien = Alien(ai_game)
                     alien.x = alien_width + 2 * alien_width * alien_number
                     alien.y = (alien.rect.height + 2 * alien.rect.height * row_number) + 100
                     alien_group.add(alien)
 
     def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level):
         # Create a single instance of Alien to determine the side of spawning
-        first_alien = self.spawn_alien(ai_game, spawn_random=True)
-        first_alien_direction = first_alien.direction # Store the direction of the first alien
+        alien = Alien(ai_game, spawn_random=True)
 
-        # Calculate the available space for aliens
+        # Determine the side of spawning
+        side = alien.direction
+        print("Spawn side in second level:", side)
+
+        # Calculate the gap between aliens
         available_space_x = ai_game.settings.screen_width - 2 * alien_width
-
-        # Calculate the gap between each alien's spawn position
         gap = available_space_x / (max_aliens_second_level + 1)
 
         # Calculate the starting x position based on the chosen side and gap
-        if first_alien_direction == "left":
+        if side == "left":
             start_x = gap
         else:
             start_x = ai_game.settings.screen_width - gap - alien_width
 
+        # Spawn all aliens on the chosen side
         for i in range(max_aliens_second_level):
-            # Create a new instance of Alien for each alien in the loop
-            alien = self.spawn_alien(ai_game, spawn_random=False)  # Ensure spawn is not random
-            alien.direction = first_alien_direction # Set the direction of the current alien to that of the first alien
+            # Create a new instance of Alien for each alien
+            new_alien = Alien(ai_game)
 
-            # Calculate the position of the current alien
-            alien.x = start_x + (i * gap) if first_alien.direction == "right" else start_x - (i * gap)
-            alien.y = alien.rect.height + 100
-            alien_group.add(alien)
-
-
+            # Set the position of the new alien based on the calculated start_x and gap
+            new_alien.x = start_x + (i + 1) * gap
+            new_alien.y = new_alien.rect.height + 100
+            
+            alien_group.add(new_alien)
 
 
+    # def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level):
+    #     # Calculate the available space for aliens
+    #     available_space_x = ai_game.settings.screen_width - 2 * alien_width
 
+    #     # Calculate the gap between each alien's spawn position
+    #     gap = available_space_x / (max_aliens_second_level + 1)
 
+    #     # Calculate the starting x position based on the chosen side and gap
+    #     start_x = ai_game.settings.screen_width - gap - alien_width
 
-
-
-        
-
-
-
-
-
+    #     # Spawn all aliens on the chosen side
+    #     for i in range(max_aliens_second_level):
+    #         alien = Alien(ai_game, spawn_random=True)
+    #         alien.x = start_x + (i + 1) * gap  # Adding 1 to i to start from the first gap
+    #         alien.y = alien.rect.height + 100
+    #         alien_group.add(alien)
