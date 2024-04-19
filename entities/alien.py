@@ -30,8 +30,8 @@ class Alien(Sprite):
 
     def update(self, *args, **kwargs):
         '''Move the alien to the right or left'''
-        AlienMovement(self.screen.get_width(), self.screen.get_height()).second_level(self)
-        #AlienMovement(self.screen.get_width(), self.screen.get_height()).first_level(self)
+        #AlienMovement(self.screen.get_width(), self.screen.get_height()).sqaure_pattern(self)
+        AlienMovement(self.screen.get_width(), self.screen.get_height()).linear_pattern(self)
 
         # Update the rect based on the new positions
         self.rect.x = int(self.x)
@@ -40,7 +40,7 @@ class Alien(Sprite):
 
     def explode_particles(self, all_particles):
         '''Create particles for explosion effect'''
-        for _ in range(10):  # Adjust the number of particles as needed
+        for i in range(10):  # Adjust the number of particles as needed
             particle = Particle(self.rect.centerx, self.rect.centery)
             all_particles.add(particle) 
 
@@ -50,7 +50,7 @@ class AlienMovement:
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-    def first_level(self, alien):
+    def linear_pattern(self, alien):
         alien.x += (alien.alien_speed * alien.fleet_direction)
         alien.rect.x = alien.x
 
@@ -58,8 +58,7 @@ class AlienMovement:
         if alien.rect.right >= alien.screen.get_width() or alien.rect.left <= 0:
             alien.fleet_direction *= -1
 
-
-    def second_level(self, alien):
+    def sqaure_pattern(self, alien):
         def lerp(start, end, t):
             return start + (end - start) * t
         
@@ -113,7 +112,23 @@ class AlienLevel:
 
         return alien
 
-    def first_level(self, ai_game, alien_group, ship_height, stats):
+    def first_level(self, ai_game, alien_group):
+        # Create a single alien object to get its dimensions
+        alien = self.spawn_alien(ai_game)
+        alien_width, alien_height = alien.rect.size
+
+        # Calculate max aliens horizontal for the first level
+        available_space_x_first_level = ai_game.settings.screen_width - (2 * alien_width)
+        number_aliens_x_first_level = available_space_x_first_level // (2 * alien_width)
+
+        for alien_number in range(number_aliens_x_first_level):
+            # Create a new alien object in each iteration
+            alien = self.spawn_alien(ai_game)
+            alien.x = alien_width + 2 * alien_width * alien_number
+            alien.y = alien.rect.height + 100
+            alien_group.add(alien)
+
+    def second_level(self, ai_game, alien_group, ship_height):
         # Create a single alien object to get its dimensions
         alien = self.spawn_alien(ai_game)
         alien_width, alien_height = alien.rect.size
@@ -126,23 +141,15 @@ class AlienLevel:
         available_space_y_first_level = ai_game.settings.screen_height - (3 * alien_height) - ship_height
         number_rows = min(2, available_space_y_first_level // (2 * alien_height))
 
-        if stats.level == 1:
+        for row_number in range(number_rows):
             for alien_number in range(number_aliens_x_first_level):
                 # Create a new alien object in each iteration
                 alien = self.spawn_alien(ai_game)
                 alien.x = alien_width + 2 * alien_width * alien_number
-                alien.y = alien.rect.height + 100
+                alien.y = (alien.rect.height + 2 * alien.rect.height * row_number) + 100
                 alien_group.add(alien)
-        elif stats.level == 2:
-            for row_number in range(number_rows):
-                for alien_number in range(number_aliens_x_first_level):
-                    # Create a new alien object in each iteration
-                    alien = self.spawn_alien(ai_game)
-                    alien.x = alien_width + 2 * alien_width * alien_number
-                    alien.y = (alien.rect.height + 2 * alien.rect.height * row_number) + 100
-                    alien_group.add(alien)
 
-    def second_level(self, ai_game, alien_group, alien_width, max_aliens_second_level):
+    def third_level(self, ai_game, alien_group, alien_width, max_aliens_second_level):
         # Create a single instance of Alien to determine the side of spawning
         first_alien = self.spawn_alien(ai_game, spawn_random=True)
         first_alien_direction = first_alien.direction # Store the direction of the first alien
