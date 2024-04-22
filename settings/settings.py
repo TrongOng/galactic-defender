@@ -17,10 +17,6 @@ class Settings:
         self.bullet_color = (255, 60, 60)
         self.bullets_allowed = 1.0
 
-        # Alien Settings
-        #self.alien_speed = 0.5
-        #self.fleet_direction = 1 # Fleet_direction of 1 represents right; -1 represents left
-
         # Alien shooting frequency (lower the faster)
         self.alien_shooting_frequency = 50
         self.alien_bullet_color = (255, 60, 60)
@@ -40,19 +36,6 @@ class Settings:
 
         # Scoring
         self.alien_points = 50
-
-    def increase_speed(self):
-        '''Increase speed settings'''
-        # self.ship_speed *= self.speedup_scale
-        # if self.ship_speed >= 20:
-        #     self.ship_speed = 20
-        # self.bullet_speed *= self.speedup_scale
-        self.alien_bullet_speed *= self.speedup_scale
-        # self.alien_speed *= self.speedup_scale
-        self.alien_shooting_frequency -= round(self.speedup_scale+5)
-
-# 8 total aliens can be on screen currently
-
 
 
 

@@ -1,3 +1,6 @@
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1"
+
 import sys, pygame, math, random
 from time import sleep
 from enum import Enum
@@ -26,6 +29,7 @@ class AlienInvasion:
     '''Overall class to manage game assets and behavior'''
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
         self.settings = Settings()
 
         # Display Window
@@ -42,16 +46,26 @@ class AlienInvasion:
         # Create a group for stars using the create_star_field function
         self.stars = create_star_field(self, 800)  # Adjust the number of stars as needed
 
+        # Create Ship and Bullets
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+
         # Create a group for alien bullets
         self.alien_bullets = pygame.sprite.Group()
         self.spacebar_pressed = False  # Flag to check if the spacebar is pressed
         self.aliens = pygame.sprite.Group()
         self.particles = pygame.sprite.Group()
 
+        # Background Music
+        pygame.mixer.music.load('music/background_music.mp3')
+        pygame.mixer.music.set_volume(0.15)
+        pygame.mixer.music.play(loops=-1, start=0.0, fade_ms=0)
 
-        self._create_fleet()
+        # Sound Effects
+        self.explosion_effect = pygame.mixer.Sound('music/explosion.wav')
+        self.explosion_effect.set_volume(0.1)
+        self.shooting_effect = pygame.mixer.Sound('music/shooting_sound.wav')
+        self.shooting_effect.set_volume(0.1)
 
         # Play button
         self.play_button = Button(self, "Play")
@@ -144,6 +158,7 @@ class AlienInvasion:
             new_bullet = Bullet(self)
             new_bullet.rect.midtop = self.ship.rect.midtop  # Set bullet starting position
             self.bullets.add(new_bullet)
+            self.shooting_effect.play()
 
     '''Update position of bullets and get rid of old bullets'''
     def _update_bullets(self):
@@ -185,6 +200,7 @@ class AlienInvasion:
         # Call explode_particles method for each hit alien
         for hit_aliens in collision.values():
             for alien in hit_aliens:
+                self.explosion_effect.play()
                 alien.explode_particles(self.particles)
 
         # repopulating the fleet
@@ -196,7 +212,6 @@ class AlienInvasion:
             # Destroy existing bullets and create a new fleet
             self.bullets.empty()
             self._create_fleet()
-            #self.settings.increase_speed()
 
     '''Respond to alien_bullet-ship collision'''
     def _check_alien_bullet_collision(self):
@@ -205,12 +220,14 @@ class AlienInvasion:
 
         if ship_collision:
             # Call explode_particles method for bullet hit ship
+            self.explosion_effect.play()
             self.ship.explode_particles(self.particles)
             self._ship_hit()
 
     '''Check for ship-alien collisions'''
     def _check_ship_alien_collision(self):
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self.explosion_effect.play()
             self.ship.explode_particles(self.particles)
             self._ship_hit()
 
@@ -277,7 +294,7 @@ class AlienInvasion:
             self._create_fleet()
 
             # Pause
-            sleep(0.5)
+            sleep(0.2)
 
         else:
             self.stats.game_active = False
