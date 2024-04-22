@@ -1,3 +1,6 @@
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1"
+
 import sys, pygame, math, random
 from time import sleep
 from enum import Enum
@@ -26,6 +29,7 @@ class AlienInvasion:
     '''Overall class to manage game assets and behavior'''
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
         self.settings = Settings()
 
         # Display Window
@@ -60,6 +64,8 @@ class AlienInvasion:
     def run_game(self):
         while True:
             self._check_events()
+            pygame.mixer.music.load('music/background_music.mp3')
+            pygame.mixer.music.play()
             
             if self.stats.game_active:
                 self.ship.update()
@@ -196,7 +202,6 @@ class AlienInvasion:
             # Destroy existing bullets and create a new fleet
             self.bullets.empty()
             self._create_fleet()
-            #self.settings.increase_speed()
 
     '''Respond to alien_bullet-ship collision'''
     def _check_alien_bullet_collision(self):
