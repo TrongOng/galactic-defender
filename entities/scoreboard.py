@@ -89,7 +89,6 @@ class Scoreboard:
         
         # Check if the level needs to be updated
         if self.update_level:
-            print("Drawing level to the screen")
             self.prep_level()  # Call prep_level to update the level
             self.screen.blit(self.level_image, self.level_rect)
             self.update_level = False  # Set the flag to False after updating

@@ -107,7 +107,6 @@ class AlienLevel:
         if spawn_random:
             '''Spawn the alien randomly on the screen'''
             alien.rect.x = random.choice([alien.rect.width, ai_game.settings.screen_width - alien.rect.width])
-            print("Alien rect.x:", alien.rect.x)
             if alien.rect.x == alien.rect.width:
                 alien.rect.y = alien.rect.height + 100
                 alien.direction = "left"
