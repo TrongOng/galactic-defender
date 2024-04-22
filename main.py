@@ -189,14 +189,14 @@ class AlienInvasion:
 
         # repopulating the fleet
         if not self.aliens:
+            # Increase level
+            self.stats.level += 1
+            self.sb.prep_level()
+
             # Destroy existing bullets and create a new fleet
             self.bullets.empty()
             self._create_fleet()
             #self.settings.increase_speed()
-
-            # Increase level
-            self.stats.level += 1
-            self.sb.prep_level()
 
     '''Respond to alien_bullet-ship collision'''
     def _check_alien_bullet_collision(self):
@@ -207,7 +207,6 @@ class AlienInvasion:
             # Call explode_particles method for bullet hit ship
             self.ship.explode_particles(self.particles)
             self._ship_hit()
-            print("Ship hit by alien bullet")  # Add a debug print statement
 
     '''Check for ship-alien collisions'''
     def _check_ship_alien_collision(self):
@@ -218,26 +217,19 @@ class AlienInvasion:
     '''Create the fleet of aliens'''
     def _create_fleet(self):
         # Make an alien
-        alien = Alien(self)
-        alien_width = alien.rect.width
-        spawn_interval = 50
         alien_level = AlienLevel()
+        ship_height = self.ship.rect.height
 
-        # Calculate max aliens horizontal for the first level
-        available_space_x_first_level = self.settings.screen_width - (2 * alien_width)
-        number_aliens_x_first_level = available_space_x_first_level // (2 * alien_width)
-        
-        # Create the first level fleet
-        alien_level.first_level(self, self.aliens, number_aliens_x_first_level, alien_width, self.stats)
+        # Current Level based on stats.level
+        current_level = self.stats.level % 3 # 3 level currently
 
-        # Calculate max aliens horizontal for the second level
-        available_space_x_second_level = self.settings.screen_width - spawn_interval
-        max_aliens_second_level = available_space_x_second_level // (alien_width + spawn_interval)
-        
-        # Create the second level fleet
-        #alien_level.second_level(self, self.aliens, alien_width, max_aliens_second_level)
-
-
+        # Create fleets based on current level
+        if current_level == 1:
+            alien_level.first_level(self, self.aliens)
+        elif current_level == 2:
+            alien_level.second_level(self, self.aliens, ship_height)
+        elif current_level == 0:
+            alien_level.third_level(self, self.aliens)
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):
@@ -274,7 +266,6 @@ class AlienInvasion:
             self.sb.prep_ships()
 
             # Reset ship's position to the center
-            print("Resetting ship's position")
             self.ship.center_ship()
 
             # Get rid of any remaining aliens and bullets
