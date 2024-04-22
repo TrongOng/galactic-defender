@@ -14,7 +14,6 @@ class Alien(Sprite):
         self.alien_speed = 5
         self.left_fleet_direction = 1
         self.right_fleet_direction = -1
-        self.fleet_direction_initial = 1
         self.current_waypoints = 0
         self.direction = ""
         self.movement_type = 0

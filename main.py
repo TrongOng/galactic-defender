@@ -220,15 +220,16 @@ class AlienInvasion:
         alien_level = AlienLevel()
         ship_height = self.ship.rect.height
 
-        
-        # Create the first level fleet
-        #alien_level.first_level(self, self.aliens)
+        # Current Level based on stats.level
+        current_level = self.stats.level % 3 # 3 level currently
 
-        # Create the second level fleet
-        alien_level.second_level(self, self.aliens, ship_height)
-        
-        # Create the third level fleet
-        #alien_level.third_level(self, self.aliens)
+        # Create fleets based on current level
+        if current_level == 1:
+            alien_level.first_level(self, self.aliens)
+        elif current_level == 2:
+            alien_level.second_level(self, self.aliens, ship_height)
+        elif current_level == 0:
+            alien_level.third_level(self, self.aliens)
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):
