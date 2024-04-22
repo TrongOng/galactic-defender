@@ -217,20 +217,18 @@ class AlienInvasion:
     '''Create the fleet of aliens'''
     def _create_fleet(self):
         # Make an alien
-        alien = Alien(self)
         alien_level = AlienLevel()
         ship_height = self.ship.rect.height
+
         
         # Create the first level fleet
         #alien_level.first_level(self, self.aliens)
 
         # Create the second level fleet
-        #alien_level.second_level(self, self.aliens, ship_height)
+        alien_level.second_level(self, self.aliens, ship_height)
         
         # Create the third level fleet
-        alien_level.third_level(self, self.aliens)
-
-
+        #alien_level.third_level(self, self.aliens)
 
     '''Check if the fleet is at an edge, Update the positions of all aliens in the fleet'''
     def _update_aliens(self):

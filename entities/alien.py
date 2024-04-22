@@ -12,9 +12,12 @@ class Alien(Sprite):
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         self.alien_speed = 5
-        self.fleet_direction = 1
+        self.left_fleet_direction = 1
+        self.right_fleet_direction = -1
+        self.fleet_direction_initial = 1
         self.current_waypoints = 0
         self.direction = ""
+        self.movement_type = 0
 
         # Load the alien image and get its rect
         self.image = pygame.image.load('images/alien.bmp')
@@ -28,16 +31,19 @@ class Alien(Sprite):
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
-    def update(self, *args, **kwargs):
-        '''Move the alien to the right or left'''
-        AlienMovement(self.screen.get_width(), self.screen.get_height()).sqaure_pattern(self)
-        #AlienMovement(self.screen.get_width(), self.screen.get_height()).linear_pattern(self)
+    def update(self):
+        '''Move the Alien based on Level'''
+        if self.movement_type == 1:
+            AlienMovement(self.screen.get_width(), self.screen.get_height()).left_linear_pattern(self)
+        elif self.movement_type == 2:
+            AlienMovement(self.screen.get_width(), self.screen.get_height()).right_linear_pattern(self)
+        elif self.movement_type == 3:
+            AlienMovement(self.screen.get_width(), self.screen.get_height()).square_pattern(self)
 
         # Update the rect based on the new positions
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
         
-
     def explode_particles(self, all_particles):
         '''Create particles for explosion effect'''
         for i in range(10):  # Adjust the number of particles as needed
@@ -50,15 +56,23 @@ class AlienMovement:
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-    def linear_pattern(self, alien):
-        alien.x += (alien.alien_speed * alien.fleet_direction)
+    def left_linear_pattern(self, alien):
+        alien.x += (alien.alien_speed * alien.left_fleet_direction)
         alien.rect.x = alien.x
 
         # Check edges and reverse direction if alien reaches the edge
         if alien.rect.right >= alien.screen.get_width() or alien.rect.left <= 0:
-            alien.fleet_direction *= -1
+            alien.left_fleet_direction *= -1
+                
+    def right_linear_pattern(self, alien):
+        alien.x += (alien.alien_speed * alien.right_fleet_direction)
+        alien.rect.x = alien.x
 
-    def sqaure_pattern(self, alien):
+        # Check edges and reverse direction if alien reaches the edge
+        if alien.rect.right >= alien.screen.get_width() or alien.rect.left <= 0:
+            alien.right_fleet_direction *= -1
+
+    def square_pattern(self, alien):
         def lerp(start, end, t):
             return start + (end - start) * t
         
@@ -88,7 +102,6 @@ class AlienMovement:
 class AlienLevel:
     def __init__(self) -> None:
         pass
-    
     def spawn_alien(self, ai_game, spawn_random=False):
         '''Spawn a new alien'''
         alien = Alien(ai_game)
@@ -126,6 +139,7 @@ class AlienLevel:
             alien = self.spawn_alien(ai_game)
             alien.x = alien_width + 2 * alien_width * alien_number
             alien.y = alien.rect.height + 100
+            alien.movement_type = 1
             alien_group.add(alien)
 
     def second_level(self, ai_game, alien_group, ship_height):
@@ -147,6 +161,10 @@ class AlienLevel:
                 alien = self.spawn_alien(ai_game)
                 alien.x = alien_width + 2 * alien_width * alien_number
                 alien.y = (alien.rect.height + 2 * alien.rect.height * row_number) + 100
+                if row_number % 2 == 0: # Even rows
+                    alien.movement_type = 1
+                else: # Odd rows
+                    alien.movement_type = 2
                 alien_group.add(alien)
 
     def third_level(self, ai_game, alien_group):
@@ -182,6 +200,7 @@ class AlienLevel:
             # Calculate the position of the current alien
             alien.x = start_x + (i * gap) if first_alien.direction == "right" else start_x - (i * gap)
             alien.y = alien.rect.height + 100
+            alien.movement_type = 3
             alien_group.add(alien)
 
 
