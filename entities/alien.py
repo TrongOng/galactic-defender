@@ -201,19 +201,3 @@ class AlienLevel:
             alien.y = alien.rect.height + 100
             alien.movement_type = 3
             alien_group.add(alien)
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
