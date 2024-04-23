@@ -96,4 +96,5 @@ class Scoreboard:
             # If the level doesn't need to be updated, just blit the existing level image
             self.screen.blit(self.level_image, self.level_rect)
 
-        self.ships.draw(self.screen)
+        # Health Bar Indicator
+        #self.ships.draw(self.screen) 
