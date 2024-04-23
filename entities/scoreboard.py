@@ -97,4 +97,4 @@ class Scoreboard:
             self.screen.blit(self.level_image, self.level_rect)
 
         # Health Bar Indicator
-        #self.ships.draw(self.screen) 
+        self.ships.draw(self.screen) 
