@@ -1,4 +1,4 @@
-# Alien Invasion
+# Galactic Defender
 
 ## How To Play The Game
 
