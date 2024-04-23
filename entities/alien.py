@@ -19,11 +19,11 @@ class Alien(Sprite):
         self.movement_type = 0
 
         # Load the alien image and get its rect
-        self.image = pygame.image.load('images/alien.bmp')
+        self.image = pygame.image.load('images/gd_alien.bmp')
         self.original_image = self.image  # Store the original image for resizing
 
         # Resize the alien initially
-        initial_size = (self.image.get_width() // 16, self.image.get_height() // 16)
+        initial_size = (self.image.get_width() // 8, self.image.get_height() // 8)
         self.image = pygame.transform.scale(self.original_image, initial_size)
         self.rect = self.image.get_rect()
 
@@ -44,10 +44,12 @@ class Alien(Sprite):
         self.rect.y = int(self.y)
         
     def explode_particles(self, all_particles):
-        '''Create particles for explosion effect'''
-        for i in range(10):  # Adjust the number of particles as needed
-            particle = Particle(self.rect.centerx, self.rect.centery)
-            all_particles.add(particle) 
+        '''Create particles for explosion effect'''    
+        for i in range(10):  # Amount of Particles
+            # Choose a random color for each particle
+            color = random.choice([(255, 0, 0), (255, 165, 0), (255, 255, 0)])
+            particle = Particle(self.rect.centerx, self.rect.centery, color)
+            all_particles.add(particle)
 
 class AlienMovement:
     '''Handles alien movement logic'''

@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from pygame.sprite import Sprite
 from entities.particle import Particle
 
@@ -13,7 +13,7 @@ class Ship(Sprite):
         self.settings = ai_game.settings
 
         # Load the ship image and get its rect
-        self.image = pygame.image.load('images/av_ship.bmp')
+        self.image = pygame.image.load('images/gd_ship.bmp')
         self.original_image = self.image  # Store the original image for resizing
 
         # Resize the ship initially
@@ -69,8 +69,6 @@ class Ship(Sprite):
 
     def center_ship(self):
         '''Center the ship on the screen'''
-        # self.rect.midbottom = self.screen_rect.midbottom
-        # self.rect.y -= 20  # Move the ship 10 pixels up
         self.rect.midbottom = self.screen_rect.midbottom
         self.rect.y -= 20  # Move the ship 20 pixels up
         self.x = float(self.rect.x)
@@ -78,8 +76,10 @@ class Ship(Sprite):
 
     def explode_particles(self, all_particles):
         '''Create particles for explosion effect'''
-        for _ in range(10):  # Adjust the number of particles as needed
-            particle = Particle(self.rect.centerx, self.rect.centery)
-            all_particles.add(particle) 
+        for i in range(10):  # Amount of particles
+            # Choose a random color for each particle
+            color = random.choice([(255, 0, 0), (255, 165, 0), (255, 255, 0)])
+            particle = Particle(self.rect.centerx, self.rect.centery, color)
+            all_particles.add(particle)
 
 
