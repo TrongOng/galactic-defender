@@ -21,7 +21,7 @@ source .venv/bin/activate
 .venv\Scripts\activate
 
 # To Deactive Virtual Environment
-deactivate
+source deactivate
 ```
 
 ### Install Depedencies
